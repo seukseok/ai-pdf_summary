@@ -1,9 +1,12 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-__import__('pysqlite3')
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+try:
+    import pysqlite3
+except ModuleNotFoundError:
+    import sqlite3
+    sys.modules['pysqlite3'] = sys.modules.pop('sqlite3')
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -15,6 +18,7 @@ from langchain.chains import RetrievalQA
 import streamlit as st
 import os
 import tempfile
+from langchain_openai import ChatOpenAI
 
 st.title("Chatpdf")
 st.write("pdf 파일을 업로드하면, 그 안에 있는 내용을 읽어서 질문에 답해줍니다.")
